@@ -1,0 +1,14 @@
+# Base compose file defining services and their settings
+# For concrete images check the environment specific override files.
+
+
+services:
+  iqb-server-overview:
+    container_name: iqb-server-overview
+    build:
+      context: .
+    volumes:
+      - ./index.php:/var/www/html/index.php
+      - ./config.json:/var/www/html/config.json
+    ports:
+      - 8899:80
