@@ -166,12 +166,74 @@
             return $return;
           }
 
+      function getKodierbox(string $url): array {
+        $return = [
+          'title' => 'unknown',
+          'version' => 'unknown',
+          'background' => 'white'
+        ];
+
+        $r = fetch("$url", [], false);
+        if (isset($r->error)) {
+          return [
+            'error' => $r->error,
+            'code' => $r->code
+          ];
+        }
+        $re = '/src="(main\S+.js)"/m';
+        preg_match($re, $r, $matches);
+
+        if (!isset($matches[1])) {
+          return [
+            'error' => 'could not get main js filename from index.html',
+            'code' => ''
+          ];
+        }
+        $jsFileName = $matches[1];
+
+        $re = '/--st-body-background:\s*([^;]+);/m';
+        preg_match($re, $r, $matches);
+        $return['background'] = isset($matches[1]) ? $matches[1] : 'silver';
+
+
+        $r = fetch("$url/$jsFileName", [], false);
+        if (isset($r->error)) {
+          return [
+            'error' => $r->error,
+            'code' => $r->code
+          ];
+        }
+
+        $re = '/\(\"appVersion\",\s*"([^\"]+)"\)/m';
+        preg_match($re, $r, $matches2);
+
+        if (!isset($matches2[1])) {
+          return [
+            'error' => 'could not get version from main js',
+            'code' => ''
+          ];
+        }
+
+        $return['version'] = $matches2[1];
+
+        $re = '/\(\"appTitle\",\s*"([^\"]+)"\)/m';
+        preg_match($re, $r, $matches2);
+
+        if (isset($matches2[1])) {
+          $return['title'] = $matches2[1];
+        }
+
+        return $return;
+      }
+
 
           foreach ($config as $url => $expectedApp) {
             echo "";
             $d = match ($expectedApp) {
               'testcenter' => getTestcenter($url),
-              'studio' => getStudio($url)
+              'studio' => getStudio($url),
+              'kodierbox' => getKodierbox($url),
+
             };
             if (!isset($d['error'])) {
               $versionParts = splitVersion($d['version']);

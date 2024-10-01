@@ -5,5 +5,8 @@
   "https://iqb-testcenter4.de":  "testcenter",
   "https://www.iqb-fragebogen.de":  "testcenter",
   "https://testcenter.iqb.hu-berlin.de":  "testcenter",
-  "https://iqb-studio.de": "studio"
+  "https://iqb-studio.de": "studio",
+  "https://studio.iqb.hu-berlin.de": "studio",
+  "https://iqb-kodierbox.de": "kodierbox"
+
 }
